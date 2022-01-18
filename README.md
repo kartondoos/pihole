@@ -22,6 +22,14 @@ uncheck the upstream dns servers that are active
 make a custom upstream dns server  
 127.0.0.1#5335  
 
+
+https://lunarwatcher.github.io/posts/2020/05/14/setting-up-ssl-with-pihole-without-a-fqdn.html
+visit this source for the original post! 
+my new pihole does not support ssl lighhtpd gets error code :/etc/lighttpd/lighttpd.conf (code=exited status=255)
+if this happands issuse the command pihole -r to restore your pihole
+
+
+
 # install openssl for https on the pi
 sudo apt install openssl  
 #Create a CA
