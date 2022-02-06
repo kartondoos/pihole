@@ -22,4 +22,7 @@ openssl x509 -req -in /etc/sslcerts/csr.pem -CA /etc/sslcerts/ca.crt.pem \
 # See the official post; it requires the private and public key merged into a combined file
 cat /etc/sslcerts/pk.pem /etc/sslcerts/crt.pem | tee /etc/sslcerts/combined.pem
 
+#restart httpd
+sudo systemctl restart lighttpd.service
+
 #source code : https://lunarwatcher.github.io/posts/2020/05/14/setting-up-ssl-with-pihole-without-a-fqdn.html
