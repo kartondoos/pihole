@@ -25,26 +25,11 @@ make a custom upstream dns server
 # install openssl for https on the pi
 https://lunarwatcher.github.io/posts/2020/05/14/setting-up-ssl-with-pihole-without-a-fqdn.html
 visit this source for the original post! 
-my new pihole does not support ssl lighhtpd gets error code :/etc/lighttpd/lighttpd.conf (code=exited status=255)
+its possible the config for ssl goes wrong. you may get a error code :/etc/lighttpd/lighttpd.conf (code=exited status=255)
 if this happands issuse the command pihole -r , remove the external.conf file and optinal rm -rf /etc/sslcerts to restore your pihole
 
-
-sudo apt install openssl  
-#Create a CA
-openssl req -newkey rsa:4096 -keyout /etc/sslcerts/ca.pk.pem -x509 -new -nodes -out /etc/sslcerts/ca.crt.pem \
--subj "/OU=unknown/O=unknown/L=unknown/ST=unknown/C=unknown" -days 365
-
-#Create a Cert Signing Request  
-openssl req -new -newkey rsa:4096 -nodes -keyout /etc/sslcerts/pk.pem -out /etc/sslcerts/csr.pem \
--subj "/CN=unknown/OU=unknown/O=unknown/L=unknown/ST=unknown/C=unknown"
-
-#Sign the certificate  
-openssl x509 -req -in /etc/sslcerts/csr.pem -CA /etc/sslcerts/ca.crt.pem -CAkey \
-/etc/sslcerts/ca.pk.pem -CAcreateserial -out /etc/sslcerts/crt.pem -days 365
-
-#merging into a combined file  
-cat /etc/sslcerts/pk.pem /etc/sslcerts/crt.pem | tee /etc/sslcerts/combined.pem
-
+use the script form lunarwatcher or my simplifyed script 
+nano /etc/sslcerts/install-cert.sh paste there the script
 
 edit the file external.conf  
 sudo nano /etc/lighttpd/external.conf  
@@ -54,16 +39,6 @@ ssl.pemfile = "/etc/letsencrypt/live/pihole.example.com/combined.pem" --> ssl.pe
 ssl.ca-file =  "/etc/letsencrypt/live/pihole.example.com/fullchain.pem" --> ssl.ca-file =  "/etc/sslcerts/ca.crt.pem"  
 sudo systemctl restart lighttpd.service  
 
-#  to renew this certificate make a script in the folder /etc/sslcerts/
-sudo nano /etc/sslcerts/install-cert.sh  
-openssl req -newkey rsa:4096 -keyout /etc/sslcerts/ca.pk.pem -x509 -new -nodes -out /etc/sslcerts/ca.crt.pem \
--subj "/OU=unknown/O=unknown/L=unknown/ST=unknown/C=unknown" -days 365 
-openssl req -new -newkey rsa:4096 -nodes -keyout /etc/sslcerts/pk.pem -out /etc/sslcerts/csr.pem \
--subj "/CN=unknown/OU=unknown/O=unknown/L=unknown/ST=unknown/C=unknown" 
-openssl x509 -req -in /etc/sslcerts/csr.pem -CA /etc/sslcerts/ca.crt.pem -CAkey \
-/etc/sslcerts/ca.pk.pem -CAcreateserial -out /etc/sslcerts/crt.pem -days 365
-cat /etc/sslcerts/pk.pem /etc/sslcerts/crt.pem | tee /etc/sslcerts/combined.pem
-sudo systemctl restart lighttpd.service
 
 sudo crontab -e  
 paste this at the end of the file  
@@ -75,3 +50,8 @@ this runs every year at the first of january
 #  want to hoste a other website beside pihole?
 cd /var/www/html/
 paste here your html pages
+
+or use webservice like apache2
+apt install apache2
+edit the /etc/apache2/ports.conf and /etc/apache2/sites-enabled/000-default.conf files to listen to diffrent port like 9000 
+
