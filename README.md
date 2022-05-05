@@ -1,5 +1,5 @@
 # Linux
-This guide is based on armbian 21.08.1 focal  
+This guide is based on armbian  buster 
 
 # setup static ip
 nmcli con
@@ -32,6 +32,7 @@ sudo apt install unbound
 sudo nano /etc/unbound/unbound.conf.d/pi-hole.conf  
 https://docs.pi-hole.net/guides/dns/unbound/ copy the example code at line Configure unbound  
 paste the example code in the file  
+systemctl restart unbound
 login on pihole and go to settings  
 uncheck the upstream dns servers that are active  
 make a custom upstream dns server  
@@ -40,6 +41,7 @@ make a custom upstream dns server
 # install openssl for https on the pi
 https://lunarwatcher.github.io/posts/2020/05/14/setting-up-ssl-with-pihole-without-a-fqdn.html
 visit this source for the original post! 
+Armbian 21.08.1 Focal has a issue for ssl it missing the mod_openssl addon
 its possible the config for ssl goes wrong. you may get a error code :/etc/lighttpd/lighttpd.conf (code=exited status=255)
 if this happands issuse the command pihole -r , remove the external.conf file and optinal rm -rf /etc/sslcerts to restore your pihole
 
