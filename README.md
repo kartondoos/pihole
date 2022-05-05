@@ -4,22 +4,33 @@ user root<br/>
 pw 1234
 
 # setup static ip
-nmcli con<br/>
-nmcli con mod "Wired connection 1" ipv4.addresses "192.168.1.205/24" <br/>
-nmcli con mod "Wired connection 1" ipv4.gateway "192.168.1.1"<br/>
-nmcli con mod "Wired connection 1" ipv4.dns "192.168.1.1"<br/>
-nmcli con mod "Wired connection 1" ipv4.method "manual"<br/>
+```bash 
+nmcli con
+nmcli con mod "Wired connection 1" ipv4.addresses "192.168.1.205/24"
+nmcli con mod "Wired connection 1" ipv4.gateway "192.168.1.1"
+nmcli con mod "Wired connection 1" ipv4.dns "192.168.1.1"
+nmcli con mod "Wired connection 1" ipv4.method "manual"
+```
 reboot to take affect!
 
 # prefrences
 prevent root ssh login<br/>
-nano /etc/ssh/sshd_config <br/>
-change line #PermitRootLogin yes to PermitRootLogin no<br/>
-prevent user/or second accont form sudo<br/>
+```bash 
+nano /etc/ssh/sshd_config
+```
+change line #PermitRootLogin yes to PermitRootLogin no
+```bash 
+systemctl restart ssh
+```
+prevent user/or second accont form sudo
+```bash 
 sudo deluser username sudo
+```
 
 # Install pi-hole 
-curl -sSL https://install.pi-hole.net | bash  
+```bash
+curl -sSL https://install.pi-hole.net | bash
+```
 up stream dns : cloudflare (we change it later if you choose to run recursive dns)  
 webadmin : on  
 log querys : on  
@@ -30,12 +41,18 @@ go to the web server
 ipaddress/admin or use pi.hole/admin  
 
 # install recursive dns on the pi  
-sudo apt install unbound  
-sudo nano /etc/unbound/unbound.conf.d/pi-hole.conf  
+```bash
+sudo apt install unbound
+```
+```bash
+sudo nano /etc/unbound/unbound.conf.d/pi-hole.conf
+```
 https://docs.pi-hole.net/guides/dns/unbound/ <br/>
 copy the example code at line Configure unbound  
 paste the example code in the file  
+```bash
 systemctl restart unbound
+```
 login on pihole and go to settings  
 uncheck the upstream dns servers that are active  
 make a custom upstream dns server  
@@ -52,15 +69,20 @@ use the script form lunarwatcher or my simplifyed script
 nano /etc/sslcerts/install-cert.sh paste there the script
 
 edit the file external.conf  
-sudo nano /etc/lighttpd/external.conf  
+```bash
+sudo nano /etc/lighttpd/external.conf
+```
 https://discourse.pi-hole.net/t/enabling-https-for-your-pi-hole-web-interface/5771 copy the example code  
 edit these 2 lines  
 ssl.pemfile = "/etc/letsencrypt/live/pihole.example.com/combined.pem" --> ssl.pemfile = "/etc/sslcerts/combined.pem" <br/>
 ssl.ca-file =  "/etc/letsencrypt/live/pihole.example.com/fullchain.pem" --> ssl.ca-file =  "/etc/sslcerts/ca.crt.pem"  
+```bash
 sudo systemctl restart lighttpd.service  
+```
 
-
-sudo crontab -e  
+```bash
+sudo crontab -e
+```
 paste this at the end of the file  
 #renew ssl cert  
 0 0 1 1 * sudo bash /etc/sslcerts/install-cert.sh >/dev/null 2>&1  
