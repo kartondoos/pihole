@@ -1,5 +1,20 @@
 # Linux
-This guide is based on debian
+This guide is based on armbian 21.08.1 focal  
+
+# setup static ip
+nmcli con
+nmcli con mod "Wired connection 1" ipv4.addresses "192.168.1.205/24"   
+nmcli con mod "Wired connection 1" ipv4.gateway "192.168.1.1"
+nmcli con mod "Wired connection 1" ipv4.dns "192.168.1.1"  
+nmcli con mod "Wired connection 1" ipv4.method "manual"
+reboot to take affect!
+
+#prefrences
+prevent root ssh login
+nano /etc/ssh/sshd_config 
+change line #PermitRootLogin yes to PermitRootLogin no
+prevent user/or second accont form sudo
+sudo deluser username sudo
 
 # Install pi-hole 
 curl -sSL https://install.pi-hole.net | bash  
